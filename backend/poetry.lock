@@ -16,6 +16,26 @@ files = [
 tests = ["mypy (>=1.14.0)", "pytest", "pytest-asyncio"]
 
 [[package]]
+name = "channels"
+version = "4.3.0"
+description = "Brings async, event-driven capabilities to Django."
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "channels-4.3.0-py3-none-any.whl", hash = "sha256:0497f3affb95e621b37d6bae1b6a5d9e8e1e1221007a2566f280091cf30ffcce"},
+    {file = "channels-4.3.0.tar.gz", hash = "sha256:7db32c61dcd88eada1647e6c6f6ad2eb724b75d4852eeff26ad1c51ccd1a37f7"},
+]
+
+[package.dependencies]
+asgiref = ">=3.9.0,<4"
+Django = ">=4.2"
+
+[package.extras]
+daphne = ["daphne (>=4.0.0)"]
+tests = ["async-timeout", "coverage (>=4.5,<5.0)", "pytest", "pytest-asyncio", "pytest-django", "selenium"]
+
+[[package]]
 name = "django"
 version = "5.2.4"
 description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
@@ -35,6 +55,21 @@ tzdata = {version = "*", markers = "sys_platform == \"win32\""}
 [package.extras]
 argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
+
+[[package]]
+name = "djangorestframework"
+version = "3.16.0"
+description = "Web APIs for Django, made easy."
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "djangorestframework-3.16.0-py3-none-any.whl", hash = "sha256:bea7e9f6b96a8584c5224bfb2e4348dfb3f8b5e34edbecb98da258e892089361"},
+    {file = "djangorestframework-3.16.0.tar.gz", hash = "sha256:f022ff46613584de994c0c6a4aebbace5fd700555fbe9d33b865ebf173eba6c9"},
+]
+
+[package.dependencies]
+django = ">=4.2"
 
 [[package]]
 name = "sqlparse"
@@ -68,4 +103,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "a2ec6d2811c3e7462ec8aeca17e77b3d10e390661340ee157eee60fdf2c7c23a"
+content-hash = "ca1f02f553754e376c13a456bfd93fd42558f3ac59f16c889c702d6ba85046ae"
