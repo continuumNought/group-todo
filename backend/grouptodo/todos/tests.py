@@ -1,15 +1,12 @@
 """Tests for the todos app."""
 from django.test import TestCase
-from django.contrib.auth import get_user_model
-from .models import Group, Todo
+from .models import TodoList, TodoItem
 
 
 class TodoModelTests(TestCase):
-    def test_create_group_and_todo(self) -> None:
-        user = get_user_model().objects.create(username='user')
-        group = Group.objects.create(name='Test Group')
-        group.members.add(user)
-        todo = Todo.objects.create(group=group, title='Task')
-        self.assertEqual(todo.title, 'Task')
-        self.assertFalse(todo.completed)
-        self.assertIn(group, Group.objects.all())
+    def test_create_list_and_item(self) -> None:
+        todo_list = TodoList.objects.create()
+        item = TodoItem.objects.create(list=todo_list, text="Task")
+        self.assertEqual(item.text, "Task")
+        self.assertFalse(item.is_completed)
+        self.assertIn(item, todo_list.items.all())

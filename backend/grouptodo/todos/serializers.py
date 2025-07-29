@@ -1,14 +1,22 @@
 from rest_framework import serializers
-from .models import Group, Todo
+from .models import TodoList, TodoItem
 
 
-class GroupSerializer(serializers.ModelSerializer):
+class TodoListSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Group
-        fields = ["id", "name", "members"]
+        model = TodoList
+        fields = ["id", "token", "created_at"]
 
 
-class TodoSerializer(serializers.ModelSerializer):
+class TodoItemSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Todo
-        fields = ["id", "group", "title", "completed", "created_at"]
+        model = TodoItem
+        fields = [
+            "id",
+            "list",
+            "text",
+            "description",
+            "is_completed",
+            "created_at",
+            "updated_at",
+        ]
