@@ -1,9 +1,11 @@
-"""URL routes for the todos app."""
-from django.urls import path
-from . import views
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
+from .views import GroupViewSet, TodoViewSet
 
-app_name = 'todos'
+router = DefaultRouter()
+router.register(r'groups', GroupViewSet)
+router.register(r'todos', TodoViewSet)
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', include(router.urls)),
 ]

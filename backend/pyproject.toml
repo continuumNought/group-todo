@@ -3,14 +3,16 @@ name = "group-todo"
 version = "0.1.0"
 description = "Collaborative todo list"
 authors = [
-    {name = "Chris La Valle",email = "codex@openai.com"}
-    {name = "Codex",email = "codex@openai.com"}
+    {name = "Chris La Valle", email = "codex@openai.com"},
+    {name = "Codex", email = "codex@openai.com"},
 ]
 license = "MIT"
 readme = "README.md"
 requires-python = "^3.11"
 dependencies = [
     "Django>=5,<6",
+    "djangorestframework",
+    "channels",
 ]
 
 

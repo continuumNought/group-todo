@@ -17,6 +17,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'channels',
     'grouptodo.todos',
 ]
 
@@ -49,6 +51,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'grouptodo.wsgi.application'
+ASGI_APPLICATION = 'grouptodo.asgi.application'
 
 # Database
 DATABASES = {
@@ -85,3 +88,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    }
+}
