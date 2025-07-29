@@ -1,13 +1,13 @@
 from rest_framework import viewsets
-from .models import Group, Todo
-from .serializers import GroupSerializer, TodoSerializer
+from .models import TodoList, TodoItem
+from .serializers import TodoListSerializer, TodoItemSerializer
 
 
-class GroupViewSet(viewsets.ModelViewSet):
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
+class TodoListViewSet(viewsets.ModelViewSet):
+    queryset = TodoList.objects.all()
+    serializer_class = TodoListSerializer
 
 
-class TodoViewSet(viewsets.ModelViewSet):
-    queryset = Todo.objects.all()
-    serializer_class = TodoSerializer
+class TodoItemViewSet(viewsets.ModelViewSet):
+    queryset = TodoItem.objects.all()
+    serializer_class = TodoItemSerializer

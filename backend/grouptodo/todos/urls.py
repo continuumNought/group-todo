@@ -1,10 +1,10 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from .views import GroupViewSet, TodoViewSet
+from .views import TodoListViewSet, TodoItemViewSet
 
 router = DefaultRouter()
-router.register(r'groups', GroupViewSet)
-router.register(r'todos', TodoViewSet)
+router.register(r'lists', TodoListViewSet)
+router.register(r'items', TodoItemViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
