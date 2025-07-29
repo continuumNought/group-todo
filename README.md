@@ -4,11 +4,12 @@ This project is a minimal Django scaffold for a collaborative todo list.
 
 ## Setup
 
-The repository contains the basic project layout. To run it you need to
-install Django and then create the initial database migrations.
+The repository contains the basic project layout. Dependencies are
+managed with [Poetry](https://python-poetry.org/). Install them and create
+the initial database migrations with:
 
 ```bash
-pip install django
+poetry install
 python manage.py migrate
 python manage.py runserver
 ```
