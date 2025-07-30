@@ -18,3 +18,13 @@ python manage.py runserver
 The default database uses SQLite and stores data in `db.sqlite3`.
 The backend exposes a REST API powered by Django REST Framework and
 supports WebSocket connections through Django Channels.
+
+## REST API
+
+The API is available under the `/api/` path. Todo lists can be created with a
+POST request to `/api/lists/`. Each list is identified by a unique `token` that
+can be used to retrieve the list or its associated items. All CRUD operations
+for todo items are exposed through `/api/items/`.
+
+To fetch all items for a specific list, send a GET request to
+`/api/lists/{token}/items/`.
