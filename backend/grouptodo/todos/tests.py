@@ -34,3 +34,9 @@ class TodoAPITests(TestCase):
         data = items_response.json()
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0]["text"], "Task")
+
+    def test_server_generates_token(self) -> None:
+        """Ensure the API ignores user-provided tokens."""
+        response = self.client.post("/api/lists/", {"token": "malicious"})
+        self.assertEqual(response.status_code, 201)
+        self.assertNotEqual(response.json()["token"], "malicious")
