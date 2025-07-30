@@ -28,3 +28,16 @@ for todo items are exposed through `/api/items/`.
 
 To fetch all items for a specific list, send a GET request to
 `/api/lists/{token}/items/`.
+
+## Docker Compose
+
+A `docker-compose.yml` is provided to run both the backend and frontend
+services together. Build and start the stack with:
+
+```bash
+docker compose up --build
+```
+
+The backend will be available on `http://localhost:8000` and the frontend
+Vite dev server on `http://localhost:5173`.
+
