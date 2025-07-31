@@ -19,6 +19,18 @@ The default database uses SQLite and stores data in `db.sqlite3`.
 The backend exposes a REST API powered by Django REST Framework and
 supports WebSocket connections through Django Channels.
 
+## Docker Compose
+
+You can also run the project using Docker Compose. This will start both the
+backend and frontend services:
+
+```bash
+docker-compose up --build
+```
+
+The Django API will be available at `http://localhost:8000` and the Parcel dev
+server at `http://localhost:3000`.
+
 ## REST API
 
 The API is available under the `/api/` path. Todo lists can be created with a
