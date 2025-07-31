@@ -208,3 +208,4 @@ __marimo__/
 
 # node stuff
 node_modules/
+.parcel-cache/
