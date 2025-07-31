@@ -28,4 +28,6 @@ class TodoItem(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self) -> str:
-        return f"{self.text} ({'\u2713' if self.is_completed else '\u2717'})"
+        check = '\u2713'
+        cross = '\u2717'
+        return f"{self.text} ({check if self.is_completed else cross})"
