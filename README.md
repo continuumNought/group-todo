@@ -31,10 +31,6 @@ docker-compose up --build
 The Django API will be available at `http://localhost:8000` and the Parcel dev
 server at `http://localhost:3000`.
 
-When developing the frontend separately, run `npm run dev` inside the
-`frontend/` directory. This starts a local proxy so requests to `/api/` are
-forwarded to `http://localhost:8000`.
-
 ## REST API
 
 The API is available under the `/api/` path. Todo lists can be created with a
