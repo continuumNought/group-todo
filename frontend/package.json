@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "parcel serve index.html",
+    "dev": "node dev-proxy.js",
     "build": "parcel build index.html"
   },
   "dependencies": {
@@ -15,6 +15,7 @@
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "parcel": "^2.0.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "http-proxy": "^1.18.1"
   }
 }
