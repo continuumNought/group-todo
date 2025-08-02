@@ -71,6 +71,11 @@ function App() {
     fetchItems();
   };
 
+  const handleDelete = async (id: number) => {
+    await fetch(`/api/items/${id}/`, { method: 'DELETE' });
+    fetchItems();
+  };
+
   return (
     <Box
       sx={{
@@ -95,6 +100,12 @@ function App() {
                 onChange={() => handleToggle(item.id, item.is_completed)}
               />
               <ListItemText primary={item.text} />
+              <IconButton
+                onClick={() => handleDelete(item.id)}
+                sx={{ color: 'red', marginLeft: 'auto' }}
+              >
+                -
+              </IconButton>
             </ListItem>
           ))}
           <ListItem disablePadding>
