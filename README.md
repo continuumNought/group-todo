@@ -21,15 +21,15 @@ supports WebSocket connections through Django Channels.
 
 ## Docker Compose
 
-You can also run the project using Docker Compose. This will start both the
-backend and frontend services:
+You can also run the project using Docker Compose. This will start the backend
+and frontend services behind an Nginx proxy:
 
 ```bash
 docker-compose up --build
 ```
 
-The Django API will be available at `http://localhost:8000` and the Parcel dev
-server at `http://localhost:3000`.
+Visit `http://localhost:3000` to access the Parcel dev server. Requests under
+`/api` are automatically routed to the Django backend.
 
 ## REST API
 
