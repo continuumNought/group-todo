@@ -62,6 +62,15 @@ function App() {
     fetchItems();
   };
 
+  const handleToggle = async (id: number, isCompleted: boolean) => {
+    await fetch(`/api/items/${id}/`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ is_completed: !isCompleted }),
+    });
+    fetchItems();
+  };
+
   return (
     <Box
       sx={{
@@ -81,7 +90,10 @@ function App() {
         <List>
           {items.map((item) => (
             <ListItem key={item.id} disablePadding>
-              <Checkbox checked={item.is_completed} />
+              <Checkbox
+                checked={item.is_completed}
+                onChange={() => handleToggle(item.id, item.is_completed)}
+              />
               <ListItemText primary={item.text} />
             </ListItem>
           ))}
