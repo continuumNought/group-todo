@@ -1,8 +1,16 @@
+import { useEffect } from 'react';
 import useStore from './store';
 
 function App() {
   const token = useStore((state) => state.token);
   const setToken = useStore((state) => state.setToken);
+
+  useEffect(() => {
+    const urlToken = window.location.pathname.slice(1);
+    if (urlToken) {
+      setToken(urlToken);
+    }
+  }, [setToken]);
 
   const handleClick = async () => {
     const response = await fetch('/api/lists/', { method: 'POST' });
@@ -24,9 +32,11 @@ function App() {
       {!token && (
         <button onClick={handleClick}>Get Busy!</button>
       )}
-      <ul>
-        <li>Under Construction</li>
-      </ul>
+      {token && (
+        <ul>
+          <li>Under Construction</li>
+        </ul>
+      )}
     </div>
   );
 }
