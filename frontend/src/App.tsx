@@ -92,6 +92,11 @@ function App() {
               placeholder="Add an item"
               value={newItemText}
               onChange={(e) => setNewItemText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleAdd();
+                }
+              }}
             />
           </ListItem>
         </List>
