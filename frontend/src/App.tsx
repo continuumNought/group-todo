@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Button from '@mui/material/Button';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -18,6 +18,7 @@ function App() {
     { id: number; text: string; is_completed: boolean }[]
   >([]);
   const [newItemText, setNewItemText] = useState('');
+  const toggleTimeouts = useRef<Record<number, ReturnType<typeof setTimeout>>>({});
 
   useEffect(() => {
     const urlToken = window.location.pathname.slice(1);
@@ -62,13 +63,23 @@ function App() {
     fetchItems();
   };
 
-  const handleToggle = async (id: number, isCompleted: boolean) => {
-    await fetch(`/api/items/${id}/`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ is_completed: !isCompleted }),
-    });
-    fetchItems();
+  const handleToggle = (id: number, isCompleted: boolean) => {
+    setItems((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, is_completed: !isCompleted } : item
+      )
+    );
+    if (toggleTimeouts.current[id]) {
+      clearTimeout(toggleTimeouts.current[id]);
+    }
+    toggleTimeouts.current[id] = setTimeout(async () => {
+      await fetch(`/api/items/${id}/`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_completed: !isCompleted }),
+      });
+      fetchItems();
+    }, 300);
   };
 
   const handleDelete = async (id: number) => {
