@@ -10,7 +10,8 @@ COPY pyproject.toml poetry.lock ./
 
 # Install dependencies
 RUN poetry config virtualenvs.create false && \
-    poetry install --no-interaction --no-ansi
+    poetry install --no-interaction --no-ansi && \
+    pip install channels-redis
 
 # Copy application code
 COPY . .
