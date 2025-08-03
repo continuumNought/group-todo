@@ -1,5 +1,8 @@
 """Tests for the todos app."""
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
+from asgiref.sync import async_to_sync
+from channels.testing import WebsocketCommunicator
+from grouptodo.asgi import application
 from .models import TodoList, TodoItem
 
 
@@ -40,3 +43,22 @@ class TodoAPITests(TestCase):
         response = self.client.post("/api/lists/", {"token": "malicious"})
         self.assertEqual(response.status_code, 201)
         self.assertNotEqual(response.json()["token"], "malicious")
+
+
+class TodoRealtimeTests(TransactionTestCase):
+    """Ensure websocket clients receive updates when items change."""
+
+    def test_item_create_triggers_update(self) -> None:
+        todo_list = TodoList.objects.create()
+        communicator = WebsocketCommunicator(
+            application, f"/ws/todos/{todo_list.token}/"
+        )
+        connected, _ = async_to_sync(communicator.connect)()
+        self.assertTrue(connected)
+
+        self.client.post("/api/items/", {"list": todo_list.id, "text": "Task"})
+
+        message = async_to_sync(communicator.receive_json_from)()
+        self.assertEqual(message, {"message": "update"})
+
+        async_to_sync(communicator.disconnect)()

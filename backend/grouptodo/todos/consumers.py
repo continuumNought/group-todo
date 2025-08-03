@@ -3,19 +3,17 @@ import json
 
 
 class TodoConsumer(AsyncWebsocketConsumer):
+    """Relay list update notifications to connected clients."""
+
     async def connect(self):
-        await self.channel_layer.group_add("todos", self.channel_name)
+        self.token = self.scope["url_route"]["kwargs"]["token"]
+        self.group_name = f"todos_{self.token}"
+        await self.channel_layer.group_add(self.group_name, self.channel_name)
         await self.accept()
 
     async def disconnect(self, close_code):
-        await self.channel_layer.group_discard("todos", self.channel_name)
+        await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
-    async def receive(self, text_data=None, bytes_data=None):
-        if text_data:
-            await self.channel_layer.group_send(
-                "todos",
-                {"type": "todo.message", "text": text_data},
-            )
-
-    async def todo_message(self, event):
-        await self.send(text_data=json.dumps({"message": event["text"]}))
+    async def list_update(self, event):
+        """Forward update notifications to the websocket client."""
+        await self.send(text_data=json.dumps({"message": "update"}))
