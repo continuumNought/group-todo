@@ -35,7 +35,7 @@ class TodoItemViewSet(viewsets.ModelViewSet):
         """Notify clients watching this item's list of an update."""
         channel_layer = get_channel_layer()
         group = f"todos_{item.list.token}"
-        async_to_sync(channel_layer.group_send)(group, {"type": "list.update"})
+        async_to_sync(channel_layer.group_send)(group, {"type": "list_update"})
 
     def perform_create(self, serializer):
         item = serializer.save()
@@ -50,5 +50,5 @@ class TodoItemViewSet(viewsets.ModelViewSet):
         instance.delete()
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
-            f"todos_{token}", {"type": "list.update"}
+            f"todos_{token}", {"type": "list_update"}
         )
