@@ -35,6 +35,16 @@ function App() {
   };
 
   useEffect(() => {
+    if (!token) return;
+    const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    const socket = new WebSocket(
+      `${protocol}://${window.location.host}/ws/todos/${token}/`
+    );
+    socket.onmessage = () => fetchItems();
+    return () => socket.close();
+  }, [token]);
+
+  useEffect(() => {
     if (token) {
       fetch(`/api/lists/${token}/`)
         .then((res) => res.json())
