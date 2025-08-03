@@ -12,7 +12,7 @@ create the initial database migrations with:
 cd backend
 poetry install
 python manage.py migrate
-python manage.py runserver
+daphne -p 8000 grouptodo.asgi:application
 ```
 
 The default database uses SQLite and stores data in `db.sqlite3`.
