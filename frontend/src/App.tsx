@@ -122,6 +122,74 @@ function App() {
     fetchItems();
   };
 
+  const renderItem = (
+    item: {
+      id: number;
+      text: string;
+      description: string | null;
+      is_completed: boolean;
+    }
+  ) => (
+    <ListItem
+      key={item.id}
+      disablePadding
+      sx={{ flexDirection: 'column', alignItems: 'stretch' }}
+    >
+      <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+        <Checkbox
+          checked={item.is_completed}
+          onChange={() => handleToggle(item.id, item.is_completed)}
+        />
+        <ListItemText primary={item.text} />
+        <IconButton
+          onClick={() => toggleExpand(item.id)}
+          sx={{ marginLeft: 'auto' }}
+        >
+          {expanded[item.id] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+        </IconButton>
+      </Box>
+      <Collapse in={!!expanded[item.id]} timeout="auto" unmountOnExit>
+        <Box sx={{ p: 2 }}>
+          {editing[item.id] ? (
+            <TextField
+              fullWidth
+              multiline
+              variant="standard"
+              value={descriptions[item.id] || ''}
+              onChange={(e) =>
+                setDescriptions({
+                  ...descriptions,
+                  [item.id]: e.target.value,
+                })
+              }
+            />
+          ) : (
+            <Typography>{item.description}</Typography>
+          )}
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            {editing[item.id] ? (
+              <IconButton onClick={() => saveDescription(item.id)}>
+                <SaveIcon />
+              </IconButton>
+            ) : (
+              <IconButton
+                onClick={() => startEdit(item.id, item.description)}
+              >
+                <EditIcon />
+              </IconButton>
+            )}
+            <IconButton
+              onClick={() => handleDelete(item.id)}
+              sx={{ color: 'red' }}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Box>
+        </Box>
+      </Collapse>
+    </ListItem>
+  );
+
   return (
     <Box
       sx={{
@@ -165,68 +233,8 @@ function App() {
             elevation={3}
             sx={{ p: { xs: 2, sm: 3 }, bgcolor: 'rgba(255,255,255,0.9)' }}
           >
-            <List sx={{ width: '100%' }}>
-              {items.map((item) => (
-                <ListItem
-                  key={item.id}
-                  disablePadding
-                  sx={{ flexDirection: 'column', alignItems: 'stretch' }}
-                >
-                  <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                    <Checkbox
-                      checked={item.is_completed}
-                      onChange={() => handleToggle(item.id, item.is_completed)}
-                    />
-                    <ListItemText primary={item.text} />
-                    <IconButton
-                      onClick={() => toggleExpand(item.id)}
-                      sx={{ marginLeft: 'auto' }}
-                    >
-                      {expanded[item.id] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                    </IconButton>
-                  </Box>
-                  <Collapse in={!!expanded[item.id]} timeout="auto" unmountOnExit>
-                    <Box sx={{ p: 2 }}>
-                      {editing[item.id] ? (
-                        <TextField
-                          fullWidth
-                          multiline
-                          variant="standard"
-                          value={descriptions[item.id] || ''}
-                          onChange={(e) =>
-                            setDescriptions({
-                              ...descriptions,
-                              [item.id]: e.target.value,
-                            })
-                          }
-                        />
-                      ) : (
-                        <Typography>{item.description}</Typography>
-                      )}
-                      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        {editing[item.id] ? (
-                          <IconButton onClick={() => saveDescription(item.id)}>
-                            <SaveIcon />
-                          </IconButton>
-                        ) : (
-                          <IconButton
-                            onClick={() => startEdit(item.id, item.description)}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                        )}
-                        <IconButton
-                          onClick={() => handleDelete(item.id)}
-                          sx={{ color: 'red' }}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </Box>
-                    </Box>
-                  </Collapse>
-                </ListItem>
-              ))}
-              <ListItem disablePadding>
+            <Box sx={{ width: '100%' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <IconButton onClick={handleAdd}>+</IconButton>
                 <TextField
                   variant="standard"
@@ -241,8 +249,18 @@ function App() {
                   fullWidth
                   sx={{ ml: 1 }}
                 />
-              </ListItem>
-            </List>
+              </Box>
+              <List>
+                {items
+                  .filter((item) => !item.is_completed)
+                  .map((item) => renderItem(item))}
+              </List>
+              <List sx={{ mt: 2 }}>
+                {items
+                  .filter((item) => item.is_completed)
+                  .map((item) => renderItem(item))}
+              </List>
+            </Box>
           </Paper>
         )}
       </Container>
