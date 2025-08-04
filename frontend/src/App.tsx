@@ -7,6 +7,13 @@ import Checkbox from '@mui/material/Checkbox';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
+import Collapse from '@mui/material/Collapse';
+import Typography from '@mui/material/Typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
 import useStore from './store';
 
 function App() {
@@ -15,9 +22,17 @@ function App() {
   const setToken = useStore((state) => state.setToken);
   const setListId = useStore((state) => state.setListId);
   const [items, setItems] = useState<
-    { id: number; text: string; is_completed: boolean }[]
+    {
+      id: number;
+      text: string;
+      description: string | null;
+      is_completed: boolean;
+    }[]
   >([]);
   const [newItemText, setNewItemText] = useState('');
+  const [expanded, setExpanded] = useState<Record<number, boolean>>({});
+  const [editing, setEditing] = useState<Record<number, boolean>>({});
+  const [descriptions, setDescriptions] = useState<Record<number, string>>({});
 
   useEffect(() => {
     const urlToken = window.location.pathname.slice(1);
@@ -86,6 +101,25 @@ function App() {
     fetchItems();
   };
 
+  const toggleExpand = (id: number) => {
+    setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const startEdit = (id: number, current: string | null) => {
+    setEditing((prev) => ({ ...prev, [id]: true }));
+    setDescriptions((prev) => ({ ...prev, [id]: current || '' }));
+  };
+
+  const saveDescription = async (id: number) => {
+    await fetch(`/api/items/${id}/`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ description: descriptions[id] }),
+    });
+    setEditing((prev) => ({ ...prev, [id]: false }));
+    fetchItems();
+  };
+
   return (
     <Box
       sx={{
@@ -104,18 +138,63 @@ function App() {
       {token && (
         <List>
           {items.map((item) => (
-            <ListItem key={item.id} disablePadding>
-              <Checkbox
-                checked={item.is_completed}
-                onChange={() => handleToggle(item.id, item.is_completed)}
-              />
-              <ListItemText primary={item.text} />
-              <IconButton
-                onClick={() => handleDelete(item.id)}
-                sx={{ color: 'red', marginLeft: 'auto' }}
-              >
-                -
-              </IconButton>
+            <ListItem
+              key={item.id}
+              disablePadding
+              sx={{ flexDirection: 'column', alignItems: 'stretch' }}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                <Checkbox
+                  checked={item.is_completed}
+                  onChange={() => handleToggle(item.id, item.is_completed)}
+                />
+                <ListItemText primary={item.text} />
+                <IconButton
+                  onClick={() => toggleExpand(item.id)}
+                  sx={{ marginLeft: 'auto' }}
+                >
+                  {expanded[item.id] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                </IconButton>
+              </Box>
+              <Collapse in={!!expanded[item.id]} timeout="auto" unmountOnExit>
+                <Box sx={{ p: 2 }}>
+                  {editing[item.id] ? (
+                    <TextField
+                      fullWidth
+                      multiline
+                      variant="standard"
+                      value={descriptions[item.id] || ''}
+                      onChange={(e) =>
+                        setDescriptions({
+                          ...descriptions,
+                          [item.id]: e.target.value,
+                        })
+                      }
+                    />
+                  ) : (
+                    <Typography>{item.description}</Typography>
+                  )}
+                  <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    {editing[item.id] ? (
+                      <IconButton onClick={() => saveDescription(item.id)}>
+                        <SaveIcon />
+                      </IconButton>
+                    ) : (
+                      <IconButton
+                        onClick={() => startEdit(item.id, item.description)}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    )}
+                    <IconButton
+                      onClick={() => handleDelete(item.id)}
+                      sx={{ color: 'red' }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Box>
+                </Box>
+              </Collapse>
             </ListItem>
           ))}
           <ListItem disablePadding>
