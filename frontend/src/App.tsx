@@ -9,6 +9,8 @@ import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import Collapse from '@mui/material/Collapse';
 import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import Paper from '@mui/material/Paper';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -120,99 +122,156 @@ function App() {
     fetchItems();
   };
 
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100vh',
-      }}
+  const renderItem = (
+    item: {
+      id: number;
+      text: string;
+      description: string | null;
+      is_completed: boolean;
+    }
+  ) => (
+    <ListItem
+      key={item.id}
+      disablePadding
+      sx={{ flexDirection: 'column', alignItems: 'stretch' }}
     >
-      {!token && (
-        <Button variant="contained" onClick={handleClick}>
-          Get Busy!
-        </Button>
-      )}
-      {token && (
-        <List>
-          {items.map((item) => (
-            <ListItem
-              key={item.id}
-              disablePadding
-              sx={{ flexDirection: 'column', alignItems: 'stretch' }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                <Checkbox
-                  checked={item.is_completed}
-                  onChange={() => handleToggle(item.id, item.is_completed)}
-                />
-                <ListItemText primary={item.text} />
-                <IconButton
-                  onClick={() => toggleExpand(item.id)}
-                  sx={{ marginLeft: 'auto' }}
-                >
-                  {expanded[item.id] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                </IconButton>
-              </Box>
-              <Collapse in={!!expanded[item.id]} timeout="auto" unmountOnExit>
-                <Box sx={{ p: 2 }}>
-                  {editing[item.id] ? (
-                    <TextField
-                      fullWidth
-                      multiline
-                      variant="standard"
-                      value={descriptions[item.id] || ''}
-                      onChange={(e) =>
-                        setDescriptions({
-                          ...descriptions,
-                          [item.id]: e.target.value,
-                        })
-                      }
-                    />
-                  ) : (
-                    <Typography>{item.description}</Typography>
-                  )}
-                  <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    {editing[item.id] ? (
-                      <IconButton onClick={() => saveDescription(item.id)}>
-                        <SaveIcon />
-                      </IconButton>
-                    ) : (
-                      <IconButton
-                        onClick={() => startEdit(item.id, item.description)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                    )}
-                    <IconButton
-                      onClick={() => handleDelete(item.id)}
-                      sx={{ color: 'red' }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </Box>
-                </Box>
-              </Collapse>
-            </ListItem>
-          ))}
-          <ListItem disablePadding>
-            <IconButton onClick={handleAdd}>+</IconButton>
+      <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+        <Checkbox
+          checked={item.is_completed}
+          onChange={() => handleToggle(item.id, item.is_completed)}
+        />
+        <ListItemText primary={item.text} />
+        <IconButton
+          onClick={() => toggleExpand(item.id)}
+          sx={{ marginLeft: 'auto' }}
+        >
+          {expanded[item.id] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+        </IconButton>
+      </Box>
+      <Collapse in={!!expanded[item.id]} timeout="auto" unmountOnExit>
+        <Box sx={{ p: 2 }}>
+          {editing[item.id] ? (
             <TextField
+              autoFocus
+              fullWidth
+              multiline
               variant="standard"
-              placeholder="Add an item"
-              value={newItemText}
-              onChange={(e) => setNewItemText(e.target.value)}
+              value={descriptions[item.id] || ''}
+              onFocus={(e) => e.target.select()}
+              onChange={(e) =>
+                setDescriptions({
+                  ...descriptions,
+                  [item.id]: e.target.value,
+                })
+              }
               onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  handleAdd();
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  saveDescription(item.id);
                 }
               }}
             />
-          </ListItem>
-        </List>
-      )}
+          ) : (
+            <Typography>{item.description}</Typography>
+          )}
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            {editing[item.id] ? (
+              <IconButton onClick={() => saveDescription(item.id)}>
+                <SaveIcon />
+              </IconButton>
+            ) : (
+              <IconButton
+                onClick={() => startEdit(item.id, item.description)}
+              >
+                <EditIcon />
+              </IconButton>
+            )}
+            <IconButton
+              onClick={() => handleDelete(item.id)}
+              sx={{ color: 'red' }}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Box>
+        </Box>
+      </Collapse>
+    </ListItem>
+  );
+
+  return (
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        p: 2,
+      }}
+    >
+      <Container maxWidth="sm" sx={{ textAlign: 'center' }}>
+        <Typography
+          variant="h3"
+          component="h1"
+          sx={{ mb: 4, fontWeight: 'bold', color: 'common.white' }}
+        >
+          ToDone!
+        </Typography>
+        {!token && (
+          <>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleClick}
+            >
+              Get Busy!
+            </Button>
+            <Typography
+              variant="body1"
+              sx={{ mt: 4, color: 'common.white' }}
+            >
+              Click "Get Busy!" to create a new shared list. Add tasks with the
+              + button, expand items to add details, and check them off when
+              you're done.
+            </Typography>
+          </>
+        )}
+        {token && (
+          <Paper
+            elevation={3}
+            sx={{ p: { xs: 2, sm: 3 }, bgcolor: 'rgba(255,255,255,0.9)' }}
+          >
+            <Box sx={{ width: '100%' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <IconButton onClick={handleAdd}>+</IconButton>
+                <TextField
+                  variant="standard"
+                  placeholder="Add an item"
+                  value={newItemText}
+                  onChange={(e) => setNewItemText(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleAdd();
+                    }
+                  }}
+                  fullWidth
+                  sx={{ ml: 1 }}
+                />
+              </Box>
+              <List>
+                {items
+                  .filter((item) => !item.is_completed)
+                  .map((item) => renderItem(item))}
+              </List>
+              <List sx={{ mt: 2 }}>
+                {items
+                  .filter((item) => item.is_completed)
+                  .map((item) => renderItem(item))}
+              </List>
+            </Box>
+          </Paper>
+        )}
+      </Container>
     </Box>
   );
 }
