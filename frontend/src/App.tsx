@@ -152,16 +152,24 @@ function App() {
         <Box sx={{ p: 2 }}>
           {editing[item.id] ? (
             <TextField
+              autoFocus
               fullWidth
               multiline
               variant="standard"
               value={descriptions[item.id] || ''}
+              onFocus={(e) => e.target.select()}
               onChange={(e) =>
                 setDescriptions({
                   ...descriptions,
                   [item.id]: e.target.value,
                 })
               }
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  saveDescription(item.id);
+                }
+              }}
             />
           ) : (
             <Typography>{item.description}</Typography>
